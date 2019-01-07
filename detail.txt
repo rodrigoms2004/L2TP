@@ -1,0 +1,1 @@
+apn.carrier.com.br,APNVPN,LNS-IP-ADDRESS,mypass,Description
