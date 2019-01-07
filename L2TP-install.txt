@@ -10,6 +10,7 @@ vim /etc/xl2tpd/xl2tpd.conf
 [global]
 port = 1701
 access control = no
+auth file = /etc/xl2tpd/l2tp-secrets
 
 [lns default]
 ip range = 172.31.32.100-172.31.32.110
@@ -20,6 +21,18 @@ pppoptfile = /etc/ppp/options.xl2tpd
 refuse pap = no
 refuse chap = no
 ppp debug = yes
+
+##################################################
+L2TP secrets
+
+vim /etc/xl2tpd/l2tp-secrets
+# Secrets for authenticating l2tp tunnels
+# us    them    secret
+# *             marko blah2
+# zeus          marko   blah
+# *     *       interop
+* * mypass
+
 
 ##################################################
 PPP
