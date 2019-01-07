@@ -1,0 +1,81 @@
+https://adriangin.wordpress.com/2018/03/03/how-to-setup-l2tp-ipsec-vpn-servers-debian/
+https://linuxexplore.com/how-tos/l2tp-vpn-using-xl2tpd/
+
+##################################################
+L2TP
+
+sudo apt-get install xl2tpd
+
+vim /etc/xl2tpd/xl2tpd.conf
+[global]
+port = 1701
+access control = no
+
+[lns default]
+ip range = 172.31.32.100-172.31.32.110
+local ip = 172.31.32.40
+require authentication = yes
+name = LinuxVPN
+pppoptfile = /etc/ppp/options.xl2tpd
+refuse pap = no
+refuse chap = no
+ppp debug = yes
+
+##################################################
+PPP
+
+apt-get install ppp
+
+vim /etc/ppp/options.xl2tpd
+noccp
+auth
+mtu 1410
+mru 1410
+nodefaultroute
+proxyarp
+silent
+debug
+ms-dns 8.8.8.8
+
+##################################################
+
+systemctl status xl2tp
+● xl2tp.service
+   Loaded: not-found (Reason: No such file or directory)
+   Active: inactive (dead)
+root@lns-ubuntu-us-east-1a:/home/ubuntu# systemctl status xl2tpd
+● xl2tpd.service - LSB: layer 2 tunelling protocol daemon
+   Loaded: loaded (/etc/init.d/xl2tpd; bad; vendor preset: enabled)
+   Active: active (running) since Mon 2019-01-07 18:50:31 UTC; 1min 55s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 21221 ExecStop=/etc/init.d/xl2tpd stop (code=exited, status=0/SUCCESS)
+  Process: 21231 ExecStart=/etc/init.d/xl2tpd start (code=exited, status=0/SUCCESS)
+    Tasks: 1
+   Memory: 120.0K
+      CPU: 5ms
+   CGroup: /system.slice/xl2tpd.service
+           └─21240 /usr/sbin/xl2tpd
+
+Jan 07 18:51:30 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:31 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:53 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:53 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:54 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:55 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:56 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:56 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:58 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+Jan 07 18:51:58 lns-ubuntu-us-east-1a xl2tpd[21240]: network_thread: received too small a packet
+
+##################################################
+AUTH
+
+vim /etc/ppp/chap-secrets
+# Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+user * mypass *
+
+##################################################
+DEBUG MODE
+
+xl2tpd -D
